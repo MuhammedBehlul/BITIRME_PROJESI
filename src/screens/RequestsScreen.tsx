@@ -24,6 +24,7 @@ import {
   serverTimestamp,
 } from 'firebase/firestore';
 import { useAuth } from '../contexts/AuthContext';
+import { useThemeContext } from '../contexts/ThemeContext';
 
 const { width } = Dimensions.get('window');
 
@@ -35,6 +36,9 @@ const RequestsScreen = () => {
   const [loadingProfile, setLoadingProfile] = useState(false);
   const db = getFirestore();
   const { user } = useAuth();
+  const { theme } = useThemeContext();
+  const isDark = theme === 'dark';
+
 
   useEffect(() => {
     const q = query(
@@ -136,80 +140,93 @@ const RequestsScreen = () => {
 
     return (
       <Modal
-        visible={profileModalVisible}
-        animationType="slide"
-        onRequestClose={() => setProfileModalVisible(false)}
-        transparent
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            {loadingProfile ? (
-              <ActivityIndicator size="large" color="#FF6F00" style={{ marginTop: 100 }} />
-            ) : (
-              <>
-                <View style={styles.headerImageContainer}>
-                  {otherUserData?.profilePicture ? (
-                    <Image source={{ uri: otherUserData.profilePicture }} style={styles.profileImage} />
-                  ) : (
-                    <View style={[styles.profileImage, styles.placeholderImageOrange]}>
-                      <Text style={styles.placeholderText}>
-                        {otherUserData?.name?.[0]}{otherUserData?.surname?.[0]}
-                      </Text>
-                    </View>
-                  )}
-                  <View style={styles.onlineBadge} />
-                </View>
+      visible={profileModalVisible}
+      animationType="slide"
+      onRequestClose={() => setProfileModalVisible(false)}
+      transparent
+    >
+      <View style={styles.modalOverlay}>
+        <View style={[styles.modalContent, { backgroundColor: isDark ? '#1c1c1c' : '#fff' }]}>
+          {loadingProfile ? (
+            <ActivityIndicator size="large" color="#FF6F00" style={{ marginTop: 100 }} />
+          ) : (
+            <>
+              <View style={styles.headerImageContainer}>
+                {otherUserData?.profilePicture ? (
+                  <Image source={{ uri: otherUserData.profilePicture }} style={styles.profileImage} />
+                ) : (
+                  <View style={[styles.profileImage, styles.placeholderImageOrange]}>
+                    <Text style={styles.placeholderText}>
+                      {otherUserData?.name?.[0]}{otherUserData?.surname?.[0]}
+                    </Text>
+                  </View>
+                )}
+                <View style={styles.onlineBadge} />
+              </View>
 
-                <Text style={styles.profileName}>
-                  {otherUserData?.name} {otherUserData?.surname},{' '}
-                  <Text style={styles.ageText}>{otherUserData?.age}</Text>
+              <Text style={[styles.profileName, { color: isDark ? '#FFA726' : '#FF6F00' }]}>
+                {otherUserData?.name} {otherUserData?.surname},{' '}
+                <Text style={[styles.ageText, { color: isDark ? '#ddd' : '#333' }]}>{otherUserData?.age}</Text>
+              </Text>
+
+              <Text style={[styles.locationText, { color: isDark ? '#bbb' : '#666' }]}>{otherUserData?.city}</Text>
+
+              <View style={styles.hobbiesContainer}>
+                {(otherUserData?.hobbies || []).map((hobby, i) => (
+                  <View
+                    key={i}
+                    style={[styles.hobbyBadge, { backgroundColor: isDark ? '#333' : '#FFE0B2' }]}
+                  >
+                    <Text style={[styles.hobbyText, { color: '#FF6F00' }]}>{hobby}</Text>
+                  </View>
+                ))}
+              </View>
+
+              <ScrollView
+                style={styles.introContainer}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ paddingBottom: 20 }}
+              >
+                <Text style={{ color: isDark ? '#fff' : '#333', fontSize: 16, lineHeight: 22 }}>
+                  {otherUserData?.introduction || 'No introduction provided.'}
                 </Text>
+              </ScrollView>
 
-                <Text style={styles.locationText}>{otherUserData?.city}</Text>
-
-                <View style={styles.hobbiesContainer}>
-                  {(otherUserData?.hobbies || []).map((hobby, i) => (
-                    <View key={i} style={styles.hobbyBadge}>
-                      <Text style={styles.hobbyText}>{hobby}</Text>
-                    </View>
-                  ))}
-                </View>
-
-                <ScrollView
-                  style={styles.introContainer}
-                  showsVerticalScrollIndicator={false}
-                  contentContainerStyle={{ paddingBottom: 20 }}
-                >
-                  <Text style={styles.profileIntroduction}>
-                    {otherUserData?.introduction || 'No introduction provided.'}
-                  </Text>
-                </ScrollView>
-
-                <View style={styles.buttonsRow}>
-                  <TouchableOpacity style={[styles.button, styles.acceptButton]} onPress={handleAccept}>
-                    <Text style={styles.buttonText}>Accept</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={[styles.button, styles.rejectButton]} onPress={handleReject}>
-                    <Text style={styles.buttonText}>Reject</Text>
-                  </TouchableOpacity>
-                </View>
-
+              <View style={styles.buttonsRow}>
                 <TouchableOpacity
-                  style={styles.closeButton}
-                  onPress={() => setProfileModalVisible(false)}
+                  style={[styles.button, styles.acceptButton]}
+                  onPress={handleAccept}
                 >
-                  <Text style={styles.closeButtonText}>Close</Text>
+                  <Text style={styles.buttonText}>Accept</Text>
                 </TouchableOpacity>
-              </>
-            )}
-          </View>
+                <TouchableOpacity
+                  style={[styles.button, styles.rejectButton]}
+                  onPress={handleReject}
+                >
+                  <Text style={styles.buttonText}>Reject</Text>
+                </TouchableOpacity>
+              </View>
+
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setProfileModalVisible(false)}
+              >
+                <Text style={styles.closeButtonText}>Close</Text>
+              </TouchableOpacity>
+            </>
+          )}
         </View>
-      </Modal>
+      </View>
+    </Modal>
     );
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: isDark ? '#121212' : '#f5f5f5' }]}>
+      <View style={[styles.headerContainer, { backgroundColor: isDark ? '#121212' : '#f5f5f5' } ]}>
+        <Text style={[styles.headerTitle, { color: isDark ? '#FFA726' : '#FF6F00' }]}>Requests</Text>
+      </View>
+
       <FlatList
         data={requests}
         keyExtractor={(item) => item.chatId}
@@ -220,7 +237,7 @@ const RequestsScreen = () => {
 
           return (
             <TouchableOpacity
-              style={styles.requestItem}
+              style={[styles.requestItem, { backgroundColor: isDark ? '#1e1e1e' : '#fff' }]}
               onPress={() => onRequestPress(item)}
               activeOpacity={0.8}
             >
@@ -235,10 +252,12 @@ const RequestsScreen = () => {
                   </View>
                 )}
                 <View style={styles.listTextContainer}>
-                  <Text style={styles.requestText}>
+                  <Text style={{ color: isDark ? '#fff' : '#000', fontWeight: 'bold', fontSize: 16 }}>
                     {otherUserData ? `${otherUserData.name} ${otherUserData.surname}` : 'Loading...'}
                   </Text>
-                  <Text style={styles.statusText}>Status: {item.requestStatus}</Text>
+                  <Text style={{ color: isDark ? '#ccc' : '#666' }}>
+                    Status: {item.requestStatus}
+                  </Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -246,10 +265,11 @@ const RequestsScreen = () => {
         }}
         ListEmptyComponent={() => (
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>No pending chat requests.</Text>
+            <Text style={{ color: isDark ? '#aaa' : '#888' }}>No pending chat requests.</Text>
           </View>
         )}
       />
+
       {profileModalVisible && <ProfileModal />}
     </View>
   );
@@ -260,6 +280,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
+  headerContainer: {
+  paddingTop: 16,
+  paddingBottom: 8,
+  paddingHorizontal: 16,
+  backgroundColor: '#FFFFFF',
+  borderBottomWidth: 1,
+  borderBottomColor: '#EEEEEE',
+},
+
+headerTitle: {
+  fontSize: 24,
+  fontWeight: '700',
+  color: '#FF6F00',
+},
   requestItem: {
     backgroundColor: '#F9F9F9',
     marginHorizontal: 16,

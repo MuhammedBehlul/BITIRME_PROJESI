@@ -19,12 +19,15 @@ import {
   getDoc,
 } from 'firebase/firestore';
 import { useAuth } from '../contexts/AuthContext';
+import { useThemeContext } from '../contexts/ThemeContext';
 
 const ChatList = () => {
   const { user } = useAuth();
   const [chats, setChats] = useState([]);
   const navigation = useNavigation();
   const db = getFirestore();
+  const { theme } = useThemeContext();
+  const isDark = theme === 'dark';
 
   useEffect(() => {
     if (!user?.uid) return;
@@ -78,7 +81,7 @@ const ChatList = () => {
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
-      style={styles.chatItem}
+      style={[styles.chatItem, { backgroundColor: isDark ? '#1e1e1e' : '#fff' }]}
       onPress={() =>
         navigation.navigate('ChatsScreen', {
           chatId: item.id,
@@ -91,68 +94,68 @@ const ChatList = () => {
           <Image source={{ uri: item.otherUserProfilePicture }} style={styles.avatar} />
         ) : (
           <View style={styles.avatarPlaceholder}>
-            <Text style={styles.avatarText}>
+            <Text style={[styles.avatarText , { color: isDark ? '#000' : '#fff', fontWeight: 'bold' }]}>
               {item.otherUserName.charAt(0).toUpperCase()}
             </Text>
           </View>
         )}
       </View>
 
-      <View style={styles.chatContent}>
-        <View style={styles.chatHeader}>
-          <Text style={styles.name} numberOfLines={1}>
-            {item.otherUserName}
-          </Text>
+      <View style={[styles.chatContent, { backgroundColor: isDark ? '#1a1a1a' : '#fff' }]}>
+  <View style={styles.chatHeader}>
+    <Text style={[styles.name, { color: isDark ? '#fff' : '#000' }]} numberOfLines={1}>
+      {item.otherUserName}
+    </Text>
 
-          {item.unreadCount > 0 && (
-            <View style={styles.unreadBadge}>
-              <Text style={styles.unreadBadgeText}>{item.unreadCount}</Text>
-            </View>
-          )}
-
-          <Text style={styles.date}>
-            {item.lastUpdated.toLocaleTimeString([], {
-              hour: '2-digit',
-              minute: '2-digit',
-            })}
-          </Text>
-        </View>
-
-        <Text style={styles.lastMessage} numberOfLines={1}>
-          {item.lastMessage || 'No messages yet'}
-        </Text>
+    {item.unreadCount > 0 && (
+      <View style={styles.unreadBadge}>
+        <Text style={styles.unreadBadgeText}>{item.unreadCount}</Text>
       </View>
+    )}
+
+    <Text style={[styles.date, { color: isDark ? '#aaa' : '#555' }]}>
+      {item.lastUpdated.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      })}
+    </Text>
+  </View>
+
+  <Text style={[styles.lastMessage, { color: isDark ? '#ccc' : '#666' }]} numberOfLines={1}>
+    {item.lastMessage || 'No messages yet'}
+  </Text>
+</View>
     </TouchableOpacity>
   );
 
   if (!user) {
-    return (
-      <View style={styles.container}>
-        <Text>You need to log in.</Text>
-      </View>
-    );
-  }
-
   return (
-    <View style={{ flex: 1 }}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Chats</Text>
-      </View>
-
-      {chats.length === 0 ? (
-        <View style={styles.container}>
-          <Text>No chats yet.</Text>
-        </View>
-      ) : (
-        <FlatList
-          data={chats}
-          keyExtractor={(item) => item.id}
-          renderItem={renderItem}
-          style={styles.list}
-        />
-      )}
+    <View style={[styles.container, { backgroundColor: isDark ? '#121212' : '#fff' }]}>
+      <Text style={{ color: isDark ? '#fff' : '#000' }}>You need to log in.</Text>
     </View>
   );
+}
+
+return (
+  <View style={{ flex: 1, backgroundColor: isDark ? '#121212' : '#fff' }}>
+    <View style={[styles.header, { backgroundColor: isDark ? '#1f1f1f' : '#f5f5f5' }]}>
+      <Text style={[styles.headerTitle, { color: isDark ? '#fff' : '#000' }]}>Chats</Text>
+    </View>
+
+    {chats.length === 0 ? (
+      <View style={[styles.container, { backgroundColor: isDark ? '#121212' : '#fff' }]}>
+        <Text style={{ color: isDark ? '#ccc' : '#666' }}>No chats yet.</Text>
+      </View>
+    ) : (
+      <FlatList
+        data={chats}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        style={{ backgroundColor: isDark ? '#121212' : '#fff' }}
+      />
+    )}
+  </View>
+);
 };
 
 const styles = StyleSheet.create({

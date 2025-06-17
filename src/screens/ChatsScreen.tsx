@@ -25,6 +25,7 @@ import {
   updateDoc,
   increment
 } from 'firebase/firestore';
+import { useThemeContext } from '../contexts/ThemeContext';
 
 const ChatScreen = () => {
   const [messages, setMessages] = useState([]);
@@ -35,8 +36,16 @@ const ChatScreen = () => {
   const route = useRoute();
   const params = route.params || {};
   const db = getFirestore();
+  const defaultImage = 'https://www.w3schools.com/howto/img_avatar.png';
+
+  const { theme } = useThemeContext();
+  const isDark = theme === 'dark';
 
   const { chatId, otherUserId } = params;
+
+  const getValidAvatar = (url) => {
+    return url && typeof url === 'string' && url.trim().length > 5 ? url : defaultImage;
+  };
 
   if (!chatId || !otherUserId) {
     return (
@@ -66,6 +75,7 @@ const ChatScreen = () => {
   }, [db, otherUserId]);
 
   useEffect(() => {
+    if (!otherUserData) return;
     const q = query(
       collection(db, 'messages'),
       where('chatId', '==', chatId),
@@ -86,7 +96,7 @@ const ChatScreen = () => {
             user: {
               _id: data.from,
               name: data.from === user.uid ? 'Sen' : otherUserData?.name || 'Diğer',
-              avatar: data.from === user.uid ? user.photoURL : otherUserData?.profilePicture,
+              avatar: data.from === user.uid ? user.photoURL : getValidAvatar(otherUserData?.profilePicture),
             },
           };
         })
@@ -156,7 +166,7 @@ const ChatScreen = () => {
     >
       <ScrollView contentContainerStyle={styles.modalContainer}>
         {otherUserData?.profilePicture ? (
-          <Image source={{ uri: otherUserData.profilePicture }} style={styles.profileImage} />
+          <Image source={{ uri: getValidAvatar(otherUserData?.profilePicture) }} style={styles.miniAvatar} />
         ) : (
           <View style={[styles.profileImage, styles.placeholderImage]}>
             <Text style={{ fontSize: 40, color: '#888' }}>
@@ -174,7 +184,7 @@ const ChatScreen = () => {
           style={styles.closeButton}
           onPress={() => setProfileModalVisible(false)}
         >
-          <Text style={styles.closeButtonText}>Kapat</Text>
+          <Text style={styles.closeButtonText}>Close</Text>
         </TouchableOpacity>
       </ScrollView>
     </Modal>
@@ -184,15 +194,23 @@ const ChatScreen = () => {
     <>
       {otherUserData && (
         <TouchableOpacity
-          style={styles.profileHeader}
+          style={[
+            styles.profileHeader,
+            { backgroundColor: isDark ? '#1a1a1a' : '#f2f2f2' } // Dark/light mode rengi
+          ]}
           onPress={() => setProfileModalVisible(true)}
         >
           <Image
-            source={{ uri: otherUserData.profilePicture }}
+            source={{ uri: getValidAvatar(otherUserData?.profilePicture) }}
             style={styles.miniAvatar}
+            onError={(e) => console.log('Image load error:', e.nativeEvent.error)}
           />
-          <Text style={styles.miniName}>{otherUserData.name}</Text>
+
+          <Text style={[styles.miniName, { color: isDark ? '#fff' : '#000' }]}>
+            {otherUserData.name}
+          </Text>
         </TouchableOpacity>
+
       )}
 
       <GiftedChat
@@ -216,7 +234,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#121212',
     borderBottomWidth: 1,
     borderColor: '#ddd',
   },
@@ -225,6 +243,7 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     marginRight: 10,
+    backgroundColor: '#ccc'
   },
   miniName: {
     fontSize: 16,
