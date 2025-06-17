@@ -1,0 +1,10 @@
+{
+  "android": {
+    "package": "com.anonymous.reactnativeapplication"
+  },
+  "extra": {
+    "eas": {
+      "projectId": "a9343831-de31-4803-bc0a-04867e21325f"
+    }
+  }
+}

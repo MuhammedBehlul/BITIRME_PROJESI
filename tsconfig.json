@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@env": ["./src/types/env.d.ts"]
+    },
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types"  // burada `src/types` klasörünü de ekledik.
+    ]
+  },
+  "extends": "expo/tsconfig.base"
+}
