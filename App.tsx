@@ -66,12 +66,12 @@ const MainApp = () => {
             <Stack.Screen
               name="ChatsScreen"
               component={ChatsScreen}
-              options={{ title: 'Sohbet' }}
+              options={{ title: 'Chats' }}
             />
             <Stack.Screen
-              name="RequestsScreen"       // Burada ekran ismi "RequestsScreen"
-              component={RequestsScreen} // Component dosyası
-              options={{ title: 'İstekler' }}
+              name="RequestsScreen"      
+              component={RequestsScreen} 
+              options={{ title: 'Requets' }}
             />
           </>
         )}

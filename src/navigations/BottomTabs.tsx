@@ -40,6 +40,9 @@ const BottomTabs = () => {
             case 'Home':
               iconName = 'search';
               break;
+            case 'Requests':
+              iconName = 'notifications-outline';  
+              break;
             case 'Chats':
               iconName = 'chatbubble-ellipses';
               break;

@@ -113,7 +113,7 @@ const handleAccept = async () => {
       <View style={[styles.container, { backgroundColor: isDark ? '#121212' : '#FFF' }]}>
         <ActivityIndicator size="large" color={isDark ? '#FFA726' : '#FF6F00'} />
         <Text style={{ marginTop: 10, color: isDark ? '#FFF' : '#000' }}>
-          {backendUrl ? 'Loading...' : 'Backend URL bekleniyor...'}
+          {backendUrl ? 'Loading...' : 'Waiting for Backend URL...'}
         </Text>
       </View>
     );

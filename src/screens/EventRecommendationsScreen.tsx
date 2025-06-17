@@ -63,7 +63,7 @@ const EventRecommendationsScreen = ({ route }: any) => {
   return (
     <View style={[styles.container, { backgroundColor: isDark ? '#121212' : '#fff' }]}>
       <Text style={[styles.header, { color: isDark ? '#FFA726' : '#FF6F00' }]}>
-        Önerilen Etkinlikler
+        Suggested Events
       </Text>
       <FlatList
         data={events}

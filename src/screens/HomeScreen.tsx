@@ -73,11 +73,11 @@ const HomeScreen = () => {
 
       // Burada yeni bir modal açabilir veya mevcut modala önerileri gösterebilirsin.
       // Örneğin, başka bir modal state'i ile açabilirsin:
-      setShowSingleEventModal(true); // Bu state'i tanımlaman lazım
+      setShowSingleEventModal(true); 
 
     } catch (error) {
       console.error('Tek kişilik event önerisi hatası:', error);
-      Alert.alert('Hata', 'Event önerileri alınamadı.');
+      Alert.alert('Error', 'Could not get event suggestions.');
     }
 };
 
@@ -150,7 +150,7 @@ const HomeScreen = () => {
       setShowMatches(true);
     } catch (err) {
       console.error('❌ fetchMatches hatası:', err);
-      Alert.alert('Hata', 'Eşleşmeler alınamadı.');
+      Alert.alert('Error', 'Could not get matches.');
     }
 
     setLoading(false);
@@ -193,7 +193,7 @@ const handleSuggest = async () => {
 
   } catch (error) {
     console.error('İki kişilik event önerisi hatası:', error);
-    Alert.alert('Hata', 'Event önerileri alınamadı.');
+    Alert.alert('Error', 'Could not get event suggestions.');
   }
 };
 
