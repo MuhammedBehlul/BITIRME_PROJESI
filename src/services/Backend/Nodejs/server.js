@@ -6,18 +6,18 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 8000;
 
-// CORS ayarı (React Native veya farklı originlerden çağırırken gerekebilir)
+
 app.use(cors());
 
 // NGROK URL ortam değişkeninden okunuyor
 const NGROK_URL = process.env.NGROK_URL || 'https://your-ngrok-url.ngrok.io';
 
-// Bu endpoint React Native'e ngrok URL'sini döner
+
 app.get('/get-public-url', (req, res) => {
   res.json({ url: NGROK_URL });
 });
 
-// Örnek kullanıcı verisi (gerçek projede DB’den çekilecek)
+
 const exampleUsers = {
   'user1': ['user2', 'user3'],
   'user2': ['user1'],
