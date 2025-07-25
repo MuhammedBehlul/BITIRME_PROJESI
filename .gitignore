@@ -1,0 +1,9 @@
+node_modules
+
+# Firebase credentials dosyasını dışla
+src/services/Backend/Python/*.json
+
+
+# Environment files
+.env
+.env.*
